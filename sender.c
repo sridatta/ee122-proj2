@@ -82,7 +82,8 @@ int main(int argc, char *argv[]){
   int read_count;
   int write_count;
 
-  while(read_count = fread(&pkt.garbage, sizeof(char), 512, fd)) {
+  while(read_count = fread(&pkt.payload, sizeof(char), 512, fd)) {
+    printf("sending. read bytes %d\n", read_count);
     gettimeofday(&curr_time, NULL);
 
     sleep_spec.tv_nsec = rand_poisson(R)*1000000;
@@ -94,6 +95,7 @@ int main(int argc, char *argv[]){
   }
 
   freeaddrinfo(res);
+  fclose(fd);
   close(sockfd);
   exit(0);
 }
