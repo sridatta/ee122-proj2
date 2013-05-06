@@ -20,10 +20,12 @@ const int NUM_PACKETS = 500;
 
 int main(int argc, char *argv[]){
 
-  if(argc != 2){
-    printf("usage: port\n");
+  if(argc != 3){
+    printf("usage: port file\n");
     exit(0);
   }
+
+  FILE* fd = fopen(argv[2], "w");
 
   srand(time(0)); // init random
 
@@ -106,6 +108,8 @@ int main(int argc, char *argv[]){
       last_time = pkt.timestamp;
       timeval_subtract(&diff_time, &curr_time, &last_time);
       sum += ((double)(diff_time.tv_sec)) + (diff_time.tv_usec / 1000000.0);
+
+      fwrite(&pkt.garbage, sizeof(char), bytes_read, fd);
       //printf("%f\n", avg_len);
     }
   }

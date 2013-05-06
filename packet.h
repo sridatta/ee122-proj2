@@ -11,7 +11,7 @@ typedef struct {
     uint32_t num_expected; /* 4 bytes */
     float avg_len; /* 4 bytes */
     char stream; /* 1 bytes */
-    char garbage[128-(4+sizeof(struct timeval)+4+1+4+4)];
+    char garbage[512];
 } ee122_packet;
 
 unsigned char * serialize_packet(unsigned char * buffer, ee122_packet p) {
@@ -25,6 +25,7 @@ unsigned char * serialize_packet(unsigned char * buffer, ee122_packet p) {
     buffer[5*4+2] = ((char*)&p.avg_len)[1];
     buffer[5*4+3] = ((char*)&p.avg_len)[0];
     buffer[6*4] = p.stream;
+    memcpy(buffer[6*4+1], p.garbage, 512);
 }
 
 ee122_packet deserialize_packet(unsigned char* buffer){
@@ -39,6 +40,7 @@ ee122_packet deserialize_packet(unsigned char* buffer){
   ((char*) &p.avg_len)[2] = buffer[5*4+1];
   ((char*) &p.avg_len)[3] = buffer[5*4];
   p.stream = buffer[6*4];
+  p.garbage = buffer[6*4+1];
   return p;
 }
 

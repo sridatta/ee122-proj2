@@ -89,10 +89,10 @@ int main(int argc, char* argv[]) {
     struct sockaddr src_addr;
     int src_len = sizeof(src_addr);
 
-    unsigned char buff[128];
+    unsigned char buff[sizeof(ee122_packet)];
     ee122_packet p;
 
-    read_count = recvfrom(insock_1, buff, 128, 0, &src_addr, &src_len);
+    read_count = recvfrom(insock_1, buff, sizeof(ee122_packet), 0, &src_addr, &src_len);
     p = deserialize_packet(buff);
 		/* read_count == -1 and errno == EWOULDBLOCk or EAGAIN indicates nothing there */
 		if (read_count == -1 && errno != EWOULDBLOCK && errno != EAGAIN)

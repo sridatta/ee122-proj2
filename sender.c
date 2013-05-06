@@ -16,8 +16,8 @@ const int NUM_PACKETS = 500;
 
 int main(int argc, char *argv[]){
 
-  if(argc != 5){
-    printf("usage: host port R stream_id\n");
+  if(argc != 6){
+    printf("usage: host port R stream_id file\n");
     exit(0);
   }
 
@@ -29,6 +29,13 @@ int main(int argc, char *argv[]){
     fprintf(stderr, "R must be an integer (milliseconds).\n");
     exit(1);
   }
+
+  FILE *fd = fopen(argv[5], "r");
+  if(NULL == fd) {
+    fprintf(stderr, "fopen() error\n");
+    return 1;
+  }
+
 
   int status;
   int sockfd;
@@ -72,7 +79,10 @@ int main(int argc, char *argv[]){
   struct timeval curr_time;
 
   int seq_no;
-  for(seq_no = 0; seq_no < 500; seq_no++) {
+  int read_count;
+  int write_count;
+
+  while(read_count = fread(&pkt.garbage, sizeof(char), 512, fd)) {
     gettimeofday(&curr_time, NULL);
 
     sleep_spec.tv_nsec = rand_poisson(R)*1000000;
